@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>asr-ChatApplication</title>
+</head>
+<body>
+    <h1>Hello World</h1>
+
+    <input type="text">
+    <button>Send</button>
+
+    <!-- ab jab 1st http request server ko milega to usme user usko ws connection karne ko bol raha hai -->
+    <script src="/socket.io/socket.io.js"></script>
+
+    
+    <script>
+        //yaha pe connection established hogi and ye line se 'connection' event emit hota hai from client.
+        const socket = io();
+        //http me input tag ke name att ke through hun user ka data get kar rahe the req.body.inputName;
+        //But yaha pe ek baar connection hone ke http request nahi jayega, to ab client ho ya server ho dono jagha se sirf event emit hoga and us event ke saath data send hoga. 
+        //Basically event-name == inputName; and msg == inputValue; but ye msg callback function ko milega.
+        // Syntax: socket.emit('eventname','msgvalue')
+        let message = document.querySelector('input');
+        let sendbtn = document.querySelector('button');
+        sendbtn.addEventListener('click',()=>{
+            
+            //sending usermsg to server
+            socket.emit('user-msg',message.value);
+        })
+
+        //if newuser'connection' event received from server
+        socket.on('connection',(data)=>{
+            console.log(data);
+        })
+
+        //receiing user msg from server
+        socket.on('user-msg',function(data){
+            console.log(data);
+        })
+
+    </script>
+</body>
+</html>
